@@ -84,6 +84,7 @@
 | 卡片折叠没展开 | 关键组件没出镜 | 录制脚本里先 click 展开再截 |
 | 拉伸变形 | UI 截图塞进 16:9 框被拉宽 | 读真实尺寸 contain-fit，别硬填比例 |
 | 词索引当字索引用 | 徽标提前/不出现 | `mentionAt` 按字符偏移找起点，别用数组下标 |
+| 静态元素被背景盖掉 | JSX 在 DOM 里、opacity 也是 1，但渲染图里就是不存在 | GradientBackground 是 position:absolute 的整屏 AbsoluteFill——CSS 层序里 positioned 元素永远画在 position:static 内容之上，跟 DOM 顺序无关。场景里的普通静态 div 必须带 transform（FadeSlide）或 position:relative 才能露脸；模板 `center` 已带 position:relative，自定义内容容器照抄这一条 |
 
 ## 时长建议
 

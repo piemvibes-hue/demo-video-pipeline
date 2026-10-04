@@ -15,6 +15,11 @@ import {
 } from "./components";
 
 const center: React.CSSProperties = {
+  // position:relative is load-bearing: it lifts this container into the
+  // positioned paint layer so its children render ABOVE GradientBackground's
+  // opaque AbsoluteFill (a positioned sibling always paints over static ones,
+  // regardless of DOM order). Without it, plain untransformed children vanish.
+  position: "relative",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -86,11 +91,11 @@ export const HookScene: React.FC = () => {
         </div>
       </div>
       {said("被听见", 200) && (
-        <FadeSlide delay={0}>
-          <div style={{ position: "absolute", top: 92, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
+        <div style={{ position: "absolute", top: 92, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
+          <FadeSlide delay={0}>
             <FeatureBadge label="这是产品要回答的问题" color={C.danger} />
-          </div>
-        </FadeSlide>
+          </FadeSlide>
+        </div>
       )}
       <SyncedCaption scene="hook" />
     </SceneTransition>
