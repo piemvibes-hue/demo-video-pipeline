@@ -4,13 +4,17 @@
 # （TTS 会把「95%」念成「百分之九十五」、漏字多字常见，硬匹配必死），再把词时间均摊到字。
 # 用法：PROJECT=/path/to/project AUDIO_OUT=/path/to/audio python3 sync-timing.py
 # 依赖：pip install openai-whisper ffmpeg-python（或直接 ffprobe）
-import os, re, subprocess, difflib
+import os, re, subprocess, difflib, sys
 import whisper
 
-ROOT = os.environ.get("PROJECT", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "template"))
+# 位置参数 = 工程根（等价 PROJECT 环境变量）
+ROOT = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else \
+    os.environ.get("PROJECT", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "template"))
 OUT_DIR = os.environ.get("AUDIO_OUT", f"{ROOT}/public/audio")
 TIMING_FILE = os.environ.get("TIMING_FILE", f"{ROOT}/src/timing.ts")
 CONSTANTS_FILE = os.environ.get("CONSTANTS", f"{ROOT}/src/constants.ts")
+print(f"PROJECT={ROOT}\nAUDIO_OUT={OUT_DIR}\nTIMING_FILE={TIMING_FILE}\nCONSTANTS={CONSTANTS_FILE}")
+assert os.path.exists(CONSTANTS_FILE), f"constants 不存在: {CONSTANTS_FILE}"
 CROSSFADE = 0.5   # 场景间交叉淡化余量（秒）
 MODEL = os.environ.get("WHISPER_MODEL", "small")  # tiny/base/small…越大越准越慢
 

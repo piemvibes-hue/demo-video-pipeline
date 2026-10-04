@@ -6,10 +6,17 @@
 # 已有的文件自动跳过，删了重跑即重生；全片用同一个 emo，语气才统一。
 import os, re, subprocess, sys
 
-ROOT = os.environ.get("PROJECT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/template")
+# 用法：python3 gen-tts.py [工程根目录]
+#   位置参数 = 工程根（等价 PROJECT 环境变量）；省略时回退到本仓库自带 template/
+#   别静默跑错工程——解析到的路径会打印出来，目检一眼再走。
+ROOT = os.path.abspath(sys.argv[1]) if len(sys.argv) > 1 else \
+    os.environ.get("PROJECT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))) + "/template")
 OUT = os.environ.get("AUDIO_OUT", f"{ROOT}/public/audio")
 CONSTANTS = os.environ.get("CONSTANTS", f"{ROOT}/src/constants.ts")
 os.makedirs(OUT, exist_ok=True)
+print(f"PROJECT={ROOT}\nAUDIO_OUT={OUT}\nCONSTANTS={CONSTANTS}")
+if not os.path.exists(CONSTANTS):
+    sys.exit(f"constants 不存在: {CONSTANTS}（第一个参数请传工程根目录）")
 
 # ---- VO 解析：constants.ts 是唯一文本源 ----
 src = open(CONSTANTS, encoding="utf-8").read()
