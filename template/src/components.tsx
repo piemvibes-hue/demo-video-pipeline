@@ -6,6 +6,7 @@ import {
   Img,
   interpolate,
   staticFile,
+  getStaticFiles,
   useCurrentFrame,
   useVideoConfig,
   Video,
@@ -309,9 +310,10 @@ export const TypewriterText: React.FC<{ text: string; startFrame?: number; cps?:
   );
 };
 
-// ---------- BackgroundMusic：全片垫乐（放入 public/bgm.mp3） ----------
+// ---------- BackgroundMusic：全片垫乐（可选：public/bgm.mp3 不存在就跳过，不炸渲染） ----------
 export const BackgroundMusic: React.FC<{ durationInFrames: number }> = ({ durationInFrames }) => {
   const frame = useCurrentFrame();
+  if (!getStaticFiles().some((f) => f.name === "bgm.mp3")) return null;
   const fadeIn = interpolate(frame, [0, 60], [0, 1], { extrapolateRight: "clamp" });
   const fadeOut = interpolate(frame, [durationInFrames - 90, durationInFrames], [1, 0], {
     extrapolateLeft: "clamp",

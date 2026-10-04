@@ -26,9 +26,9 @@ export const FONT =
 // 由 scripts/sync-timing.py 按实际配音时长重写（dur = 配音时长 + CROSSFADE 余量）。
 // 手动初排时按配音稿字数估：中文朗读约 4.5 字/秒。
 export const SCENES: Record<string, { start: number; dur: number }> = {
-  hook: { start: 0.0, dur: 10.0 },
-  feature: { start: 9.5, dur: 14.0 },
-  closing: { start: 23.0, dur: 12.0 },
+  hook: { start: 0.0, dur: 6.9 },
+  feature: { start: 6.4, dur: 6.8 },
+  closing: { start: 12.7, dur: 7.0 },
 };
 
 export const VOICE_BASE = "audio";
