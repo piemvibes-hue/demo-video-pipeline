@@ -11,6 +11,7 @@ import {
   SceneTransition,
   Stat,
   SyncedCaption,
+  useSceneOut,
   useSync,
 } from "./components";
 
@@ -53,26 +54,30 @@ export const ClipStage: React.FC<{
   );
 };
 
-export const BadgeRow: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <div style={{ position: "absolute", top: 92, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 24 }}>
-    {children}
-  </div>
-);
+export const BadgeRow: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const out = useSceneOut();
+  return (
+    <div style={{ position: "absolute", top: 92, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 24, opacity: out }}>
+      {children}
+    </div>
+  );
+};
 
 // ---------- S1 hook：大字钩子 → 产品渐显 ----------
 export const HookScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { said } = useSync("hook");
+  const out = useSceneOut();
   const quoteIn = interpolate(frame, [10, 34], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const videoReveal = interpolate(frame, [85, 130], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   return (
-    <SceneTransition>
+    <SceneTransition fadeIn={false}>
       <GradientBackground variant="dramatic" />
       <Audio src={staticFile(`${VOICE_BASE}/hook.mp3`)} />
       <div style={center}>
         <div
           style={{
-            opacity: quoteIn,
+            opacity: quoteIn * out,
             transform: `scale(${0.92 + quoteIn * 0.08})`,
             fontSize: 92,
             fontWeight: 800,
@@ -91,7 +96,7 @@ export const HookScene: React.FC = () => {
         </div>
       </div>
       {said("被听见", 200) && (
-        <div style={{ position: "absolute", top: 92, left: 0, right: 0, display: "flex", justifyContent: "center" }}>
+        <div style={{ position: "absolute", top: 92, left: 0, right: 0, display: "flex", justifyContent: "center", opacity: out }}>
           <FadeSlide delay={0}>
             <FeatureBadge label="这是产品要回答的问题" color={C.danger} />
           </FadeSlide>

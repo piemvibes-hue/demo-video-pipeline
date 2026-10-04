@@ -95,16 +95,28 @@ export const FadeSlide: React.FC<{
 };
 
 // ---------- SceneTransition：首尾 15 帧交叉淡入淡出 ----------
-export const SceneTransition: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+// fadeIn=false 用于首场景：首帧必须即内容（黑首帧会让封面/预览变成黑屏）
+export const SceneTransition: React.FC<{ children: React.ReactNode; fadeIn?: boolean }> = ({ children, fadeIn = true }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const op = interpolate(
     frame,
-    [0, 15, durationInFrames - 15, durationInFrames],
-    [0, 1, 1, 0],
+    [0, fadeIn ? 15 : 0.001, durationInFrames - 15, durationInFrames],
+    [fadeIn ? 0 : 1, 1, 1, 0],
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" }
   );
   return <AbsoluteFill style={{ opacity: op }}>{children}</AbsoluteFill>;
+};
+
+// useSceneOut：文字层（徽标/大字/字幕）在场景末尾转场开始前先自行淡出——
+// 否则交叉溶解的 0.5s 里上场的字以半透明叠在下场画面上（幽灵字）
+export const useSceneOut = (frames = 15) => {
+  const frame = useCurrentFrame();
+  const { durationInFrames } = useVideoConfig();
+  return interpolate(frame, [durationInFrames - frames - 15, durationInFrames - 15], [1, 0], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
 };
 
 // ---------- BrowserFrame：浏览器壳 ----------
@@ -210,8 +222,9 @@ export const SyncedCaption: React.FC<{ scene: string }> = ({ scene }) => {
   let gi = groups.findIndex((g) => t < g[g.length - 1].end + 0.35);
   if (gi < 0) gi = groups.length - 1;
   const shown = groups[gi];
+  const out = useSceneOut();
   return (
-    <div style={{ position: "absolute", bottom: 64, left: 0, right: 0, textAlign: "center", padding: "0 140px" }}>
+    <div style={{ position: "absolute", bottom: 64, left: 0, right: 0, textAlign: "center", padding: "0 140px", opacity: out }}>
       <div
         style={{
           display: "inline-block",

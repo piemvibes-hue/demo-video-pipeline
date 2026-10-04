@@ -85,6 +85,9 @@
 | 拉伸变形 | UI 截图塞进 16:9 框被拉宽 | 读真实尺寸 contain-fit，别硬填比例 |
 | 词索引当字索引用 | 徽标提前/不出现 | `mentionAt` 按字符偏移找起点，别用数组下标 |
 | 静态元素被背景盖掉 | JSX 在 DOM 里、opacity 也是 1，但渲染图里就是不存在 | GradientBackground 是 position:absolute 的整屏 AbsoluteFill——CSS 层序里 positioned 元素永远画在 position:static 内容之上，跟 DOM 顺序无关。场景里的普通静态 div 必须带 transform（FadeSlide）或 position:relative 才能露脸；模板 `center` 已带 position:relative，自定义内容容器照抄这一条 |
+| absolute 套在 FadeSlide 里 | 徽标条件触发了但屏上看不见 | FadeSlide 的 transform 成为 absolute 子树的包含块，top:92 相对 FadeSlide 自身（可能已在屏外）解析。正确顺序：absolute 壳在外、FadeSlide 在内 |
+| 黑首帧 | 视频第 0 帧全黑，封面/缩略图显示成黑屏 | SceneTransition 首场传 `fadeIn={false}`——首帧即渐变底+字幕 |
+| 转场幽灵字 | 交叉溶解时上场的标题/徽标以半透明叠在下场画面上半秒，脏 | 文字层接 `useSceneOut()`——场景末 15 帧转场开始前自行淡出，只留干净画面参与溶解。模板 BadgeRow/SyncedCaption 已内置，自定义大字层手动乘 out |
 
 ## 时长建议
 
