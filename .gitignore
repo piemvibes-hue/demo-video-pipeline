@@ -1,0 +1,9 @@
+node_modules/
+out/
+dist/
+*.webm
+__pycache__/
+.DS_Store
+clips/
+public/audio/
+public/clips/
