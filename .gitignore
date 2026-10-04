@@ -7,3 +7,8 @@ __pycache__/
 clips/
 public/audio/
 public/clips/
+# 模板产物目录：e2e/使用过程生成的音频、录屏、渲染输出不进仓库
+# —— 残留会被 gen-tts.py 的"已有即跳过"当成新工程的有效配音，静默用错内容
+template/public/audio/
+template/public/clips/
+template/out/
