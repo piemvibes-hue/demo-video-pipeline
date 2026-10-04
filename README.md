@@ -14,6 +14,19 @@ playwright ──▶ ffmpeg ──▶ IndexTTS-2/edge-tts ──▶ whisper+diff
 - 手工对轨（剪辑软件里挪字幕）做不出逐字高亮；这套管线让**配音稿成为唯一文本源**，字幕时间戳由 whisper 识别反推，永远同步
 - 场景切换、徽标时机、浏览器壳这些「看起来像专业剪辑」的部分全是代码，可复现可 diff
 
+## 给 agent 用（跨工具）
+
+仓库根目录本身就是一个合法 skill 目录（SKILL.md + scripts/ + docs/）。装进你的工具：
+
+| 工具 | 装法 |
+|---|---|
+| Claude Code | `git clone` 后复制为 `<项目>/.claude/skills/demo-video-pipeline/`（或 `~/.claude/skills/` 全局） |
+| Codex | 复制为 `<项目>/.codex/skills/demo-video-pipeline/` |
+| Devin | 复制为 `<项目>/.devin/skills/demo-video-pipeline/` |
+| 其他 agent | 直接喂 `SKILL.md` 作上下文，脚本按相对路径调用 |
+
+详见 [AGENTS.md](AGENTS.md)（agent 执行契约：该做什么、不要做什么）。
+
 ## 快速开始
 
 ```bash
